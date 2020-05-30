@@ -35,6 +35,8 @@ class MessagesWidget extends StatelessWidget {
                         isMe: chatDocuments[index]['userId'] ==
                             futureSnapshot.data.uid,
                         key: ValueKey(chatDocuments[index].documentID),
+                        firstName: chatDocuments[index]['firstName'],
+                        imageUrl: chatDocuments[index]['userImage'],
                       ));
             },
           );

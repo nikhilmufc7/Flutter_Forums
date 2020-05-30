@@ -32,6 +32,8 @@ dependencies:
   firebase_auth:
   flutter_screenutil:
   google_fonts:
+  image_picker:
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:

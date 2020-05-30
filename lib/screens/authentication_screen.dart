@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat/screens/chat_screen.dart';
 import 'package:flutter_chat/utils/auth.dart';
+import 'package:flutter_chat/widgets/user_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -30,6 +35,12 @@ class _AuthScreenState extends State<AuthScreen>
   AnimationController _controller;
   Animation<Offset> _slideAnimation;
   Animation<double> _opacityAnimation;
+
+  File _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   @override
   void initState() {
@@ -111,6 +122,24 @@ class _AuthScreenState extends State<AuthScreen>
       } else {
         await signUp(emailInputController.text, passwordInputController.text,
             firstNameInputController.text);
+
+        final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(user.uid + '.jpg');
+
+        await ref.putFile(_userImageFile).onComplete;
+
+        final url = await ref.getDownloadURL();
+
+        await Firestore.instance
+            .collection('users')
+            .document(user.uid)
+            .updateData({
+          'userImage': url,
+        });
 
         MaterialPageRoute(builder: (context) => ChatScreen());
       }
@@ -280,52 +309,6 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _googleButton() {
-    return OutlineButton(
-      splashColor: Colors.grey,
-      onPressed: () async {
-        try {
-          await signInWithGoogle();
-          FirebaseUser _user = await FirebaseAuth.instance.currentUser();
-          if (_user != null) {
-            MaterialPageRoute(builder: (context) => ChatScreen());
-          } else {
-            setState(() {});
-          }
-        } catch (error) {
-          switch (error.code) {
-            case "sign_in_canceled":
-              errorMessage = "Sign in cancelled";
-              break;
-          }
-        }
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            0, ScreenUtil().setHeight(10), 0, ScreenUtil().setHeight(10)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(10)),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(20),
-                  color: Colors.grey,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _divider() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(10)),
@@ -484,6 +467,10 @@ class _AuthScreenState extends State<AuthScreen>
                       SizedBox(
                         height: ScreenUtil().setHeight(20),
                       ),
+                      if (_authMode == AuthMode.Signup) UserImage(_pickedImage),
+                      SizedBox(
+                        height: ScreenUtil().setHeight(20),
+                      ),
                       _submitButton(),
                       MaterialButton(
                         onPressed: () {},
@@ -497,7 +484,6 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       ),
                       _divider(),
-                      _googleButton(),
                       Expanded(
                         flex: 2,
                         child: SizedBox(),
