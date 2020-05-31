@@ -34,6 +34,7 @@ dependencies:
   google_fonts:
   image_picker:
   firebase_storage:
+  firebase_messaging:
 
 dev_dependencies:
   flutter_test:
