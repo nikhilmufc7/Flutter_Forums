@@ -387,7 +387,7 @@ class _AuthScreenState extends State<AuthScreen>
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-          text: 'Iel',
+          text: 'Fire',
           style: GoogleFonts.portLligatSans(
             fontSize: ScreenUtil().setSp(30),
             fontWeight: FontWeight.w700,
@@ -395,17 +395,17 @@ class _AuthScreenState extends State<AuthScreen>
           ),
           children: [
             TextSpan(
-              text: 'ts',
+              text: 'side',
               style: TextStyle(
                   color: Colors.black, fontSize: ScreenUtil().setSp(30)),
             ),
             TextSpan(
-              text: ' Va',
+              text: ' Ch',
               style: TextStyle(
                   color: Color(0xffe46b10), fontSize: ScreenUtil().setSp(30)),
             ),
             TextSpan(
-              text: 'ult',
+              text: 'at',
               style: TextStyle(
                   color: Colors.black, fontSize: ScreenUtil().setSp(30)),
             ),
