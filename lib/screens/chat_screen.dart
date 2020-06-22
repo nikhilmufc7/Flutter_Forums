@@ -5,7 +5,8 @@ import 'package:flutter_chat/widgets/message.dart';
 import 'package:flutter_chat/widgets/new_message.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key key}) : super(key: key);
+  final String documentId;
+  const ChatScreen({Key key, this.documentId}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -16,6 +17,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     final fbm = FirebaseMessaging();
+    print(widget.documentId);
 
     fbm.requestNotificationPermissions();
     fbm.configure(onMessage: (msg) {
