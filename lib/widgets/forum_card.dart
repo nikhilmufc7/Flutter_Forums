@@ -1,9 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/screens/chat_screen.dart';
 import 'package:intl/intl.dart';
 
-class ForumCard extends StatelessWidget {
+class ForumCard extends StatefulWidget {
+  @override
+  _ForumCardState createState() => _ForumCardState();
+}
+
+class _ForumCardState extends State<ForumCard> {
+  String uid = '';
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  getCurrentUser() async {
+    final FirebaseUser user = await _auth.currentUser();
+    uid = user.uid;
+
+    print(uid);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -35,7 +58,9 @@ class ForumCard extends StatelessWidget {
                       subtitle: Text(DateFormat('dd-MM-yyyy HH:mm')
                           .format(chatDocuments[index]['sentAt'].toDate())),
                       trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: Icon(uid == chatDocuments[index]['userId']
+                              ? Icons.delete
+                              : null),
                           onPressed: () async {
                             await Firestore.instance.runTransaction(
                                 (Transaction myTransaction) async {
