@@ -48,7 +48,15 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         body: Container(
           child: Column(
-            children: [Expanded(child: MessagesWidget()), NewMessage()],
+            children: [
+              Expanded(
+                  child: MessagesWidget(
+                documentId: widget.documentId,
+              )),
+              NewMessage(
+                documentId: widget.documentId,
+              )
+            ],
           ),
         ));
   }

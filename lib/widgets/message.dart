@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/widgets/message_bubble.dart';
 
 class MessagesWidget extends StatelessWidget {
-  const MessagesWidget({Key key}) : super(key: key);
+  final String documentId;
+  const MessagesWidget({Key key, this.documentId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,8 @@ class MessagesWidget extends StatelessWidget {
           }
           return StreamBuilder(
             stream: Firestore.instance
+                .collection('forums')
+                .document(documentId)
                 .collection('chats')
                 .orderBy('sentAt', descending: true)
                 .snapshots(),

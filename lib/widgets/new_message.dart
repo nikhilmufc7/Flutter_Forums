@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewMessage extends StatefulWidget {
-  NewMessage({Key key}) : super(key: key);
+  final String documentId;
+  NewMessage({Key key, this.documentId}) : super(key: key);
 
   @override
   _NewMessageState createState() => _NewMessageState();
@@ -20,7 +21,11 @@ class _NewMessageState extends State<NewMessage> {
     final user = await FirebaseAuth.instance.currentUser();
     final userData =
         await Firestore.instance.collection('users').document(user.uid).get();
-    Firestore.instance.collection('chats').add({
+    Firestore.instance
+        .collection('forums')
+        .document(widget.documentId)
+        .collection('chats')
+        .add({
       'text': _newMessage,
       'sentAt': Timestamp.now(),
       'userId': user.uid,
