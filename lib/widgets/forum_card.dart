@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/screens/chat_screen.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +34,15 @@ class ForumCard extends StatelessWidget {
                       title: Text(chatDocuments[index]['title']),
                       subtitle: Text(DateFormat('dd-MM-yyyy HH:mm')
                           .format(chatDocuments[index]['sentAt'].toDate())),
+                      trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            await Firestore.instance.runTransaction(
+                                (Transaction myTransaction) async {
+                              await myTransaction.delete(
+                                  snapshot.data.documents[index].reference);
+                            });
+                          }),
                     ),
                   ),
                 ));
